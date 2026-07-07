@@ -1,0 +1,105 @@
+/* 기본 스타일 초기화 및 레이아웃 */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    transition: background-color 0.5s ease;
+    /* 배경색 변경 시 부드럽게 */
+}
+
+
+/* 집중 모드일 때의 body 배경색 (JS로 토글 예정) */
+
+body.focus-mode {
+    background-color: #ffebea;
+    /* 부드러운 빨간색 계열 */
+}
+
+
+/* 휴식 모드일 때의 body 배경색 */
+
+body.break-mode {
+    background-color: #e6f4ea;
+    /* 부드러운 초록색 계열 */
+}
+
+.timer-container {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+}
+
+.timer-display {
+    margin: 30px 0;
+}
+
+#status-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #5f6368;
+    margin-bottom: 10px;
+}
+
+#time-left {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #202124;
+}
+
+.timer-controls button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #1a73e8;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.timer-controls button:hover {
+    background-color: #1557b0;
+}
+
+.record-section {
+    margin-top: 30px;
+    text-align: left;
+    border-top: 1px solid #dadce0;
+    padding-top: 20px;
+}
+
+#record-list {
+    list-style-type: none;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#record-list li {
+    padding: 8px 12px;
+    background-color: #f1f3f4;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+#clear-records-btn {
+    background: none;
+    border: none;
+    color: #d93025;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    margin-top: 10px;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 뽀모도로 타이머</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="timer-container">
+        <header>
+            <h1>🍅 Pomodoro Timer</h1>
+            <p>25분 집중하고 5분 휴식하며 생산성을 높여보세요.</p>
+        </header>
+
+        <main class="timer-display">
+            <div id="status-text">집중 시간!</div>
+            <div id="time-left">25:00</div>
+        </main>
+
+        <section class="timer-controls">
+            <button id="start-btn">시작</button>
+            <button id="pause-btn">일시정지</button>
+            <button id="reset-btn">리셋</button>
+        </section>
+
+        <section class="record-section">
+            <h2>📊 오늘의 집중 기록 (<span id="total-count">0</span>회)</h2>
+            <ul id="record-list">
+            </ul>
+            <button id="clear-records-btn">기록 전체 삭제</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
