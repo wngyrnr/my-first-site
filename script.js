@@ -1,127 +1,128 @@
-// 1. DOM 요소 선택
-const timeLeftDisplay = document.querySelector('#time-left');
-const statusText = document.querySelector('#status-text');
-const startBtn = document.querySelector('#start-btn');
-const pauseBtn = document.querySelector('#pause-btn');
-const resetBtn = document.querySelector('#reset-btn');
-const recordList = document.querySelector('#record-list');
-const totalCountDisplay = document.querySelector('#total-count');
-const clearRecordsBtn = document.querySelector('#clear-records-btn');
+const timeLeftDisplay = document.querySelector('#time-left'); //dom시간
+const startButton = document.querySelector('#start-btn'); //시작버튼
+const stopButton = document.querySelector('#pause-btn'); //정지버튼
+const resetButton = document.querySelector('#reset-btn'); //리셋버튼
+const recordList = document.querySelector('#record-list'); //완료 리스트
+const totalCount = document.querySelector('#total-count'); //
+const clearButton = document.querySelector('#clear-records-btn'); //리셋버튼
 
-// 2. 타이머 상태 변수
-let timerId = null;
-let timeInSeconds = 1500; //기본 25분
-let isFocusMode = true; // true: 집중, false: 휴식
 
-// 3. LocalStorage에서 기존 기록 불러오기
-let focusRecords = JSON.parse(localStorage.getItem('focusRecords')) || [];
+let timerId = null; //setInterval()함수가 실행중인지 알기 위한 변수
+let isMinutes = 25; //초기 시간 저장(집중시 *25 / 휴식시 * 5 )
+let isSeconds = isMinutes * 60; //반복할 때 중복되지 않기 위해 미리 1500초 만들어놓기
+let isFocus = true; // 현재 상태 저장(집중or휴식)
 
-// 초기 화면 갱신
-updateRecordDOM();
-document.body.classList.add('focus-mode');
+//초기화면
 
-// --- 타이머 기능 로직 ---
+document.body.classList.add('focus-mode'); //배경색 집중모드
 
+//localStorage에 있는 문자열을 가져오기 위한 코드
+//JSON문자열을 가져온 후 JSON.parse로 js객체에 저장.
+let focusRecord = JSON.parse(localStorage.getItem('focusRecord')) || [];
+//focusRecord에 저장된 객체를 그려줌.
+updateRecodDOM();
+//초기화면을 그려줌
+updateDisplay();
+
+
+// 1. 초기화면 그려주기
 function updateDisplay() {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    // 00:00 형태로 포맷팅
-    timeLeftDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    let minutes = Math.floor(isSeconds / 60); //분
+    let seconds = isSeconds % 60; //초
+
+    //00:00 형태로 포맷팅
+    timeLeftDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
 }
 
+
+//1. 타이머 시작
 function startTimer() {
-    if (timerId !== null) return; // 이미 실행 중이면 중복 실행 방지
-
+    if (timerId !== null) { //타이머가 이미 실행중이면 실행하지 않는다.(중복방지)
+        return;
+    }
     timerId = setInterval(() => {
-        timeInSeconds--;
-        updateDisplay();
+        isSeconds--; //화면 시간 -1
 
-        if (timeInSeconds <= 0) {
-            clearInterval(timerId);
+        if (isSeconds <= 0) {
+            clearInterval(timerId); //setInterval을 종료해줌
+            timerId = null;
 
 
-            if (isFocusMode) {
-                // 집중 완료 시 기록 저장
-                saveRecord();
-                alert('25분 집중 완료! 5분간 휴식하세요.');
-
-                // 휴식 모드로 전환
-                isFocusMode = false;
-                statusText.textContent = '휴식 시간 ☕';
-                timeInSeconds = 5 * 60; // 5분
-                document.body.classList.replace('focus-mode', 'break-mode');
+            if (isFocus) { //isfocus == true 집중상태에서 0초가 되었을 때 들어옴.
+                saverecord(); //현재 시간을 저장
+                isFocus = false; //현재 상태를 false; ==휴식상태로 바꿈
+                isSeconds = 300; //5분타이머 설정
+                document.body.classList.remove('focus-mode');
+                document.body.classList.add('break-mode'); //화면을 휴식화면으로 바꿔줌
             } else {
-                alert('휴식 끝! 다시 집중해볼까요?');
-
-                // 집중 모드로 전환
-                isFocusMode = true;
-                statusText.textContent = '집중 시간!';
-                timeInSeconds = 25 * 60; // 25분
-                document.body.classList.replace('break-mode', 'focus-mode');
+                isFocus = true; // isFocus==flase(휴식상태)일 때 타이머가 0초가되면 실행
+                isMinutes = 25;
+                isSeconds = isMinutes * 60;
+                document.body.classList.remove('break-mode');
+                document.body.classList.add('focus-mode');
             }
-            updateDisplay();
         }
-    }, 1000);
+
+        updateDisplay(); //업데이트된 정보를 화면에 다시 그려줌
+    }, 1000); //1초마다 실행 1000ms
+
 }
 
-function pauseTimer() {
-    clearInterval(timerId);
+function pauseTimer() { //정지버튼
+    clearInterval(timerId); //setInterval을 종료해줌
     timerId = null;
 }
 
-function resetTimer() {
-    pauseTimer();
-    isFocusMode = true;
-    statusText.textContent = '집중 시간!';
-    timeInSeconds = 25 * 60;
-    document.body.className = ''; // 클래스 리셋 후
+function resetTimer() { //리셋버튼
+    pauseTimer(); //타이머 정지
+    isSeconds = 1500; // 타이머 25분으로 초기화
+    isFocus = true; //집중상태로 바꿈
+    timerId = null; //타이머가 작동하지 않는다는 것을 알려줌
     document.body.classList.add('focus-mode');
-    updateDisplay();
+    document.body.classList.remove('break-mode'); //배경을 집중상태로 바꿈
+    updateDisplay(); //초기화된 정보를 바탕으로 화면을 다시 그림
 }
+//dom조작
 
-// --- LocalStorage 및 DOM 조작 로직 ---
-
-function saveRecord() {
+function saverecord() {
     const now = new Date();
-    // 현재 시간 포맷 (예: 14:35)
-    const timestamp = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const timeStamp = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-    focusRecords.push({
+    focusRecord.push({
         id: Date.now(),
-        time: timestamp,
-        message: '25분 집중 완료'
+        time: timeStamp,
+        message: '✌️ 집중시간 25분 종료'
     });
 
-    localStorage.setItem('focusRecords', JSON.stringify(focusRecords));
-    updateRecordDOM();
+    localStorage.setItem('focusRecord', JSON.stringify(focusRecord));
+    updateRecodDOM();
 }
 
-function updateRecordDOM() {
-    // 기존 목록 비우기
+//list를 다시 그리기 위한 코드
+function updateRecodDOM() {
+    //원래 있던 요소 비움
     recordList.innerHTML = '';
 
-    // 기록 채우기
-    focusRecords.forEach((record) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${record.message}</span> <small>${record.time}</small>`;
-        recordList.appendChild(li);
+    focusRecord.forEach(item => {
+        const list = document.createElement("li")
+        list.innerHTML = `<span>${item.message}</span> <small>${item.time}</small>`
+        recordList.appendChild(list);
+
     });
+    totalCount.textContent = focusRecord.length; //총 반복 횟수
+};
 
-    // 총 횟수 업데이트
-    totalCountDisplay.textContent = focusRecords.length;
-}
+function clearReacod() {
+    focusRecord = [];
+    localStorage.removeItem('focusRecord');
+    updateRecodDOM();
 
-function clearRecords() {
-    if (confirm('모든 집중 기록을 삭제하시겠습니까?')) {
-        focusRecords = [];
-        localStorage.removeItem('focusRecords');
-        updateRecordDOM();
-    }
 }
 
 
-// 4. 이벤트 리스너 등록 (addEventListener)
-startBtn.addEventListener('click', startTimer);
-pauseBtn.addEventListener('click', pauseTimer);
-resetBtn.addEventListener('click', resetTimer);
-clearRecordsBtn.addEventListener('click', clearRecords);
+
+startButton.addEventListener('click', startTimer);
+stopButton.addEventListener('click', pauseTimer);
+resetButton.addEventListener('click', resetTimer);
+clearButton.addEventListener('click', clearReacod);
