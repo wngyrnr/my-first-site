@@ -5,6 +5,8 @@ const resetButton = document.querySelector('#reset-btn'); //리셋버튼
 const recordList = document.querySelector('#record-list'); //완료 리스트
 const totalCount = document.querySelector('#total-count'); //
 const clearButton = document.querySelector('#clear-records-btn'); //리셋버튼
+const title = document.querySelector('#title'); //타이틀
+
 
 
 let timerId = null; //setInterval()함수가 실행중인지 알기 위한 변수
@@ -32,6 +34,7 @@ function updateDisplay() {
 
     //00:00 형태로 포맷팅
     timeLeftDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    document.title = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds} 🍅뽀모도로`;
 
 }
 
@@ -65,7 +68,7 @@ function startTimer() {
         }
 
         updateDisplay(); //업데이트된 정보를 화면에 다시 그려줌
-    }, 1000); //1초마다 실행 1000ms
+    }, 0.1); //1초마다 실행 1000ms
 
 }
 
@@ -114,10 +117,11 @@ function updateRecodDOM() {
 };
 
 function clearReacod() {
-    focusRecord = [];
-    localStorage.removeItem('focusRecord');
-    updateRecodDOM();
-
+    if (confirm("정말 삭제하시겠습니까?")) {
+        focusRecord = [];
+        localStorage.removeItem('focusRecord');
+        updateRecodDOM();
+    }
 }
 
 
