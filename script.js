@@ -6,6 +6,7 @@ const recordList = document.querySelector('#record-list'); //완료 리스트
 const totalCount = document.querySelector('#total-count'); //
 const clearButton = document.querySelector('#clear-records-btn'); //리셋버튼
 const title = document.querySelector('#title'); //타이틀
+const statusText = document.querySelector('#status-text'); //상태변화
 
 
 
@@ -34,7 +35,7 @@ function updateDisplay() {
 
     //00:00 형태로 포맷팅
     timeLeftDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    document.title = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds} 🍅뽀모도로`;
+    document.title = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}🍅뽀모도로`;
 
 }
 
@@ -56,19 +57,21 @@ function startTimer() {
                 saverecord(); //현재 시간을 저장
                 isFocus = false; //현재 상태를 false; ==휴식상태로 바꿈
                 isSeconds = 300; //5분타이머 설정
+                statusText.textContent = '휴식 시간';
                 document.body.classList.remove('focus-mode');
                 document.body.classList.add('break-mode'); //화면을 휴식화면으로 바꿔줌
             } else {
                 isFocus = true; // isFocus==flase(휴식상태)일 때 타이머가 0초가되면 실행
                 isMinutes = 25;
                 isSeconds = isMinutes * 60;
+                statusText.textContent = '집중 시간';
                 document.body.classList.remove('break-mode');
                 document.body.classList.add('focus-mode');
             }
         }
 
         updateDisplay(); //업데이트된 정보를 화면에 다시 그려줌
-    }, 0.1); //1초마다 실행 1000ms
+    }, 1000); //1초마다 실행 1000ms
 
 }
 
@@ -82,6 +85,7 @@ function resetTimer() { //리셋버튼
     isSeconds = 1500; // 타이머 25분으로 초기화
     isFocus = true; //집중상태로 바꿈
     timerId = null; //타이머가 작동하지 않는다는 것을 알려줌
+    statusText.textContent = '집중 시간';
     document.body.classList.add('focus-mode');
     document.body.classList.remove('break-mode'); //배경을 집중상태로 바꿈
     updateDisplay(); //초기화된 정보를 바탕으로 화면을 다시 그림
