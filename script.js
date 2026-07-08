@@ -10,8 +10,7 @@ const clearRecordsBtn = document.querySelector('#clear-records-btn');
 
 // 2. 타이머 상태 변수
 let timerId = null;
-let isMinutes = 25; // 기본 25분 집중
-let timeInSeconds = isMinutes * 60;
+let timeInSeconds = 1500; //기본 25분
 let isFocusMode = true; // true: 집중, false: 휴식
 
 // 3. LocalStorage에서 기존 기록 불러오기
@@ -39,12 +38,12 @@ function startTimer() {
 
         if (timeInSeconds <= 0) {
             clearInterval(timerId);
-            timerId = null;
+
 
             if (isFocusMode) {
                 // 집중 완료 시 기록 저장
                 saveRecord();
-                alert('🎉 25분 집중 완료! 5분간 휴식하세요.');
+                alert('25분 집중 완료! 5분간 휴식하세요.');
 
                 // 휴식 모드로 전환
                 isFocusMode = false;
@@ -52,11 +51,11 @@ function startTimer() {
                 timeInSeconds = 5 * 60; // 5분
                 document.body.classList.replace('focus-mode', 'break-mode');
             } else {
-                alert('💪 휴식 끝! 다시 집중해볼까요?');
+                alert('휴식 끝! 다시 집중해볼까요?');
 
                 // 집중 모드로 전환
                 isFocusMode = true;
-                statusText.textContent = '집중 시간! ✍️';
+                statusText.textContent = '집중 시간!';
                 timeInSeconds = 25 * 60; // 25분
                 document.body.classList.replace('break-mode', 'focus-mode');
             }
@@ -73,7 +72,7 @@ function pauseTimer() {
 function resetTimer() {
     pauseTimer();
     isFocusMode = true;
-    statusText.textContent = '집중 시간! ✍️';
+    statusText.textContent = '집중 시간!';
     timeInSeconds = 25 * 60;
     document.body.className = ''; // 클래스 리셋 후
     document.body.classList.add('focus-mode');
@@ -90,7 +89,7 @@ function saveRecord() {
     focusRecords.push({
         id: Date.now(),
         time: timestamp,
-        message: '🎯 25분 집중 완료'
+        message: '25분 집중 완료'
     });
 
     localStorage.setItem('focusRecords', JSON.stringify(focusRecords));
@@ -119,6 +118,7 @@ function clearRecords() {
         updateRecordDOM();
     }
 }
+
 
 // 4. 이벤트 리스너 등록 (addEventListener)
 startBtn.addEventListener('click', startTimer);
